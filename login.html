@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>أرض الوحوش — الدخول</title>
+<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#10151b;color:#ecebe4;font-family:Tahoma,system-ui,sans-serif}
+.c{width:min(92vw,380px);background:#1b232d;border:1px solid #34414f;border-radius:14px;padding:22px}h1{margin:0 0 4px;font-size:22px}p{margin:0 0 14px;opacity:.7;font-size:13px}
+label{display:block;margin:10px 0 4px;font-size:13px}input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #34414f;background:#10151b;color:#fff;font:inherit}
+button{font:inherit;padding:10px 14px;border-radius:8px;border:1px solid #34414f;background:#2a3542;color:#fff;cursor:pointer}button.p{background:#f0b445;color:#111;border:0;font-weight:700}
+.r{display:flex;gap:8px;margin-top:14px}.r button{flex:1}#e{color:#e9695f;min-height:20px;margin-top:10px;font-size:13px}.g{margin-top:14px;text-align:center}</style></head><body>
+<div class="c"><h1>🐉 أرض الوحوش</h1><p>سجّل دخولك ليُحفظ تقدمك على الخادم وتلعب مع أصدقائك من أي جهاز.</p>
+<label>اسم اللاعب</label><input id="n" maxlength="16" autocomplete="username"><label>كلمة السر</label><input id="p" type="password" autocomplete="current-password">
+<label>خانة الحفظ</label><select id="s"><option value="1">الخانة 1</option><option value="2">الخانة 2</option><option value="3">الخانة 3</option></select>
+<div class="r"><button class="p" onclick="go('login')">دخول</button><button onclick="go('register')">حساب جديد</button></div><div id="e"></div>
+<div class="g"><button onclick="guest()">العب كضيف (بدون حساب)</button></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const nm=localStorage.getItem('mlname');if(nm)$('#n').value=nm;$('#s').value=localStorage.getItem('mlslot')||'1';
+async function go(mode){$('#e').textContent='';try{const r=await fetch('api/login',{method:'POST',body:JSON.stringify({name:$('#n').value.trim(),pass:$('#p').value,mode})}),j=await r.json();
+ if(!r.ok){$('#e').textContent=j.err||'خطأ';return}localStorage.setItem('mlpid',j.pid);localStorage.setItem('mlname',j.name);localStorage.setItem('mlslot',$('#s').value);location.href='/'}catch(e){$('#e').textContent='تعذّر الاتصال بالخادم'}}
+function guest(){let pid=localStorage.getItem('mlpid');if(!pid){pid=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('');localStorage.setItem('mlpid',pid)}
+ const n=($('#n').value.trim()||'لاعب').slice(0,16);localStorage.setItem('mlname',n);localStorage.setItem('mlslot',$('#s').value);location.href='/'}
+</script></body></html>
